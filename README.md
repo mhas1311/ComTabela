@@ -1,4 +1,4 @@
-# 💰 Fintrack - Controle Financeiro Pessoal
+# 📊 ComTabela - Controle Financeiro Pessoal
 
 [![React](https://img.shields.io/badge/React-18.2.0-blue.svg)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-4.4.5-646CFF.svg)](https://vitejs.dev/)
@@ -9,7 +9,7 @@
 
 ## 📖 Resumo em Inglês
 
-**Fintrack** is a modern personal finance tracking application built with React, Vite, and Supabase. It helps users manage expenses, categorize transactions, and visualize spending patterns through an elegant and intuitive dark-themed interface. Features include secure authentication, interactive dashboard, transaction management, category system, and responsive design.
+**ComTabela** is a modern personal finance tracking application built with React, Vite, and Supabase. It helps users manage expenses, categorize transactions, and visualize spending patterns through an elegant and intuitive dark-themed interface. Features include secure authentication, interactive dashboard, transaction management, category system, and responsive design.
 
 ## ✨ Funcionalidades
 
@@ -52,8 +52,8 @@ Antes de começar, você vai precisar ter instalado em sua máquina:
 
 ### 1. Clone o repositório
 ```bash
-git clone https://github.com/seu-usuario/fintrack.git
-cd fintrack
+git clone https://github.com/seu-usuario/comtabela.git
+cd comtabela
 ```
 
 ### 2. Instale as dependências
@@ -91,7 +91,7 @@ O aplicativo estará disponível em `http://localhost:5173`
 ## 📁 Estrutura do Projeto
 
 ```
-fintrack/
+comtabela/
 ├── public/                 # Arquivos estáticos
 ├── src/
 │   ├── assets/            # Imagens e recursos

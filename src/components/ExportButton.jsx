@@ -51,7 +51,7 @@ export default function ExportButton({ transactions }) {
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = 'fintrack_transacoes.csv'
+    link.download = 'comtabela_transacoes.csv'
     link.click()
     URL.revokeObjectURL(url)
     setOpen(false)
@@ -76,7 +76,7 @@ export default function ExportButton({ transactions }) {
 
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, 'Transações')
-    XLSX.writeFile(wb, 'fintrack_transacoes.xlsx')
+    XLSX.writeFile(wb, 'comtabela_transacoes.xlsx')
     setOpen(false)
   }
 
@@ -84,7 +84,7 @@ export default function ExportButton({ transactions }) {
     const data = getTableData()
     const doc = new jsPDF()
 
-    doc.text('FinTrack - Transações', 14, 15)
+    doc.text('ComTabela - Transações', 14, 15)
 
     autoTable(doc, {
       startY: 20,
@@ -101,7 +101,7 @@ export default function ExportButton({ transactions }) {
     doc.text(`Despesas: ${formatMoney(totalExpense)}`, 14, finalY + 8)
     doc.text(`Saldo: ${formatMoney(balance)}`, 14, finalY + 16)
 
-    doc.save('fintrack_transacoes.pdf')
+    doc.save('comtabela_transacoes.pdf')
     setOpen(false)
   }
 

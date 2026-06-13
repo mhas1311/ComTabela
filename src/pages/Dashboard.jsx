@@ -131,7 +131,7 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-950 flex items-center justify-center text-white text-lg">
-        Carregando FinTrack...
+        Carregando ComTabela...
       </div>
     )
   }
@@ -140,7 +140,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-950 text-white p-4 md:p-8">
       {/* Cabeçalho */}
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">FinTrack 💰</h1>
+        <h1 className="text-3xl font-bold">ComTabela 📊</h1>
         <div className="flex items-center gap-4">
           <ExportButton transactions={transactions} />
           <button onClick={signOut} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">

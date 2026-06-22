@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
+import { AccessibilityProvider } from './contexts/AccessibilityContext'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Transactions from './pages/Transactions'
@@ -10,6 +11,7 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+      <AccessibilityProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={
@@ -23,6 +25,7 @@ function App() {
           } />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
+      </AccessibilityProvider>
       </AuthProvider>
     </BrowserRouter>
   )

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { Plus, Trash2, Edit3, X, Check, ArrowLeft } from 'lucide-react'
+import Navbar from '../components/Navbar'
 
 export default function Categories() {
   const { user } = useAuth()
@@ -147,18 +148,17 @@ export default function Categories() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white p-4 md:p-8">
-      {/* Navegação superior */}
-      <div className="flex justify-between items-center mb-4">
-        <Link to="/dashboard" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
-          <ArrowLeft size={18} /> Voltar ao Início
-        </Link>
-        <Link
-          to="/transactions"
-          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-lg font-medium transition-colors"
-        >
-          Transações
-        </Link>
-      </div>
+      <Navbar
+        backTo="/dashboard"
+        rightSlot={
+          <Link
+            to="/transactions"
+            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-lg font-medium transition-colors text-sm"
+          >
+            Transações
+          </Link>
+        }
+      />
 
       <h1 className="text-3xl font-bold mb-8">Categorias</h1>
 

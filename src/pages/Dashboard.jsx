@@ -1,18 +1,40 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { useAccessibility } from '../contexts/AccessibilityContext'
 import { supabase } from '../lib/supabase'
 import { ArrowRight, TrendingUp, TrendingDown, DollarSign, PlusCircle, Tags } from 'lucide-react'
+import Navbar from '../components/Navbar'
 import {
   PieChart, Pie, Cell,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts'
-import ExportButton from '../components/ExportButton'
 
 const COLORS = ['#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#8b5cf6', '#ec4899', '#06b6d4', '#f97316']
 
 export default function Dashboard() {
-  const { signOut, user } = useAuth()
+  const { user } = useAuth()
+  const { settings: a11y, colors } = useAccessibility()
+  const isLight = a11y.lightTheme
+
+  // Cores dinâmicas para recharts (usa stroke hardcoded, não CSS vars)
+  const chartColors = {
+    grid:      isLight ? '#e2e8f0' : '#374151',
+    axis:      isLight ? '#64748b' : '#9ca3af',
+    pieStroke: isLight ? '#e2e8f0' : '#1f2937',
+  }
+
+  // Escala para baixa visão — recharts usa px hardcoded, não responde a CSS rem
+  const lv = a11y.lowVision
+  const chart = {
+    pieHeight:    lv ? 420 : 320,
+    barHeight:    lv ? 380 : 300,
+    innerRadius:  lv ? 90  : 70,
+    outerRadius:  lv ? 150 : 120,
+    axisFontSize: lv ? 15  : 12,
+    centerFontSize:      lv ? 22 : 18,
+    centerSubFontSize:   lv ? 14 : 12,
+  }
   const [totalIncome, setTotalIncome] = useState(0)
   const [totalExpense, setTotalExpense] = useState(0)
   const [transactions, setTransactions] = useState([])
@@ -138,39 +160,40 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white p-4 md:p-8">
-      {/* Cabeçalho */}
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">ComTabela 📊</h1>
-        <div className="flex items-center gap-4">
-          <ExportButton transactions={transactions} />
-          <button onClick={signOut} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-            Sair
-          </button>
-        </div>
-      </div>
+      <Navbar showSignOut transactions={transactions} />
 
       {/* Cards de resumo */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
           <div className="flex items-center gap-3 mb-2">
-            <div className="bg-emerald-900 p-2 rounded-lg"><TrendingUp size={20} className="text-emerald-400" /></div>
+            <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--a11y-success-bg)' }}>
+              <TrendingUp size={20} style={{ color: 'var(--a11y-income)' }} />
+            </div>
             <span className="text-gray-400">Receitas</span>
           </div>
-          <p className="text-2xl font-bold text-emerald-400">{formatMoney(totalIncome)}</p>
+          <p className="text-2xl font-bold" style={{ color: 'var(--a11y-income)' }}>
+            {formatMoney(totalIncome)}
+          </p>
         </div>
         <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
           <div className="flex items-center gap-3 mb-2">
-            <div className="bg-red-900 p-2 rounded-lg"><TrendingDown size={20} className="text-red-400" /></div>
+            <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--a11y-danger-bg)' }}>
+              <TrendingDown size={20} style={{ color: 'var(--a11y-expense)' }} />
+            </div>
             <span className="text-gray-400">Despesas</span>
           </div>
-          <p className="text-2xl font-bold text-red-400">{formatMoney(totalExpense)}</p>
+          <p className="text-2xl font-bold" style={{ color: 'var(--a11y-expense)' }}>
+            {formatMoney(totalExpense)}
+          </p>
         </div>
         <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
           <div className="flex items-center gap-3 mb-2">
-            <div className="bg-blue-900 p-2 rounded-lg"><DollarSign size={20} className="text-blue-400" /></div>
+            <div className="bg-blue-900 p-2 rounded-lg">
+              <DollarSign size={20} style={{ color: 'var(--a11y-balance)' }} />
+            </div>
             <span className="text-gray-400">Saldo</span>
           </div>
-          <p className={`text-2xl font-bold ${balance >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+          <p className="text-2xl font-bold" style={{ color: balance >= 0 ? 'var(--a11y-income)' : 'var(--a11y-expense)' }}>
             {formatMoney(balance)}
           </p>
         </div>
@@ -217,7 +240,7 @@ export default function Dashboard() {
         <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
           <h2 className="text-lg font-semibold mb-4">Despesas por Categoria</h2>
           {pieData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={320}>
+            <ResponsiveContainer width="100%" height={chart.pieHeight}>
               <PieChart>
                 <Pie
                   data={pieData}
@@ -225,11 +248,11 @@ export default function Dashboard() {
                   nameKey="name"
                   cx="50%"
                   cy="50%"
-                  innerRadius={70}
-                  outerRadius={120}
+                  innerRadius={chart.innerRadius}
+                  outerRadius={chart.outerRadius}
                   paddingAngle={3}
                   cornerRadius={8}
-                  stroke="#1f2937"
+                  stroke={chartColors.pieStroke}
                   strokeWidth={2}
                   animationBegin={0}
                   animationDuration={800}
@@ -238,16 +261,18 @@ export default function Dashboard() {
                   {pieData.map((entry, index) => (
                     <Cell
                       key={index}
-                      fill={entry.color || COLORS[index % COLORS.length]}
+                      fill={a11y.colorBlind
+                        ? colors.chart[index % colors.chart.length]
+                        : (entry.color || colors.chart[index % colors.chart.length])}
                       style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
                     />
                   ))}
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
-                <text x="50%" y="48%" textAnchor="middle" dominantBaseline="middle" className="fill-white text-xl font-bold">
+                <text x="50%" y="48%" textAnchor="middle" dominantBaseline="middle" fill="currentColor" fontSize={chart.centerFontSize} fontWeight="bold">
                   {formatMoney(totalExpense)}
                 </text>
-                <text x="50%" y="56%" textAnchor="middle" dominantBaseline="middle" className="fill-gray-400 text-sm">
+                <text x="50%" y="56%" textAnchor="middle" dominantBaseline="middle" fill={chartColors.axis} fontSize={chart.centerSubFontSize}>
                   Total de Despesas
                 </text>
               </PieChart>
@@ -261,14 +286,14 @@ export default function Dashboard() {
         <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
           <h2 className="text-lg font-semibold mb-4">Evolução Mensal</h2>
           {barData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={chart.barHeight}>
               <BarChart data={barData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis dataKey="name" stroke="#9ca3af" fontSize={12} />
-                <YAxis stroke="#9ca3af" fontSize={12} />
+                <CartesianGrid strokeDasharray="3 3" stroke={chartColors.grid} />
+                <XAxis dataKey="name" stroke={chartColors.axis} tick={{ fill: chartColors.axis, fontSize: chart.axisFontSize, fontWeight: lv ? 600 : 400 }} />
+                <YAxis stroke={chartColors.axis} tick={{ fill: chartColors.axis, fontSize: chart.axisFontSize, fontWeight: lv ? 600 : 400 }} />
                 <Tooltip formatter={(value) => formatMoney(value)} />
-                <Bar dataKey="Receitas" fill="#10b981" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Despesas" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Receitas" fill={colors.chartIncome} radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Despesas" fill={colors.chartExpense} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
@@ -290,7 +315,7 @@ export default function Dashboard() {
                     {new Date(t.date).toLocaleDateString('pt-BR')} • {t.category?.name || 'Sem categoria'}
                   </p>
                 </div>
-                <span className={t.type === 'income' ? 'text-emerald-400' : 'text-red-400'}>
+                <span style={{ color: t.type === 'income' ? 'var(--a11y-income)' : 'var(--a11y-expense)' }}>
                   {t.type === 'income' ? '+' : '-'}{formatMoney(t.amount)}
                 </span>
               </li>

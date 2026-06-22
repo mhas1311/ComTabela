@@ -1,1 +1,209 @@
 @import "tailwindcss";
+
+/* ─── Tokens semânticos de cores (tema escuro, sem daltonismo) ───────────────
+   Estes valores são sobrescritos via JS (document.documentElement.style)
+   quando o modo daltonismo está ativo — inline style tem prioridade máxima.
+   O tema claro sobrescreve estes valores via html.light-theme abaixo.
+────────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Indicadores financeiros */
+  --a11y-income:  #10b981;
+  --a11y-expense: #ef4444;
+  --a11y-balance: #3b82f6;
+  --a11y-pending: #f59e0b;
+
+  /* Badge: sucesso (Pago / Recebido) */
+  --a11y-success-bg:     #064e3b;
+  --a11y-success-text:   #a7f3d0;
+  --a11y-success-border: #047857;
+
+  /* Badge: perigo (Pendente / despesa) */
+  --a11y-danger-bg:      #7f1d1d;
+  --a11y-danger-text:    #fca5a5;
+  --a11y-danger-border:  #b91c1c;
+
+  /* Badge: aviso (Pendente / receita) */
+  --a11y-warning-bg:     #3d2e00;
+  --a11y-warning-text:   #fde68a;
+  --a11y-warning-border: #b45309;
+}
+
+/* Overrides dos tokens semânticos para tema claro */
+html.light-theme {
+  --a11y-income:  #059669;
+  --a11y-expense: #dc2626;
+  --a11y-balance: #2563eb;
+  --a11y-pending: #d97706;
+
+  --a11y-success-bg:     #d1fae5;
+  --a11y-success-text:   #065f46;
+  --a11y-success-border: #059669;
+
+  --a11y-danger-bg:      #fee2e2;
+  --a11y-danger-text:    #991b1b;
+  --a11y-danger-border:  #dc2626;
+
+  --a11y-warning-bg:     #fef3c7;
+  --a11y-warning-text:   #78350f;
+  --a11y-warning-border: #d97706;
+}
+
+/* ─── Transição suave aplicada SOMENTE durante a troca de tema ─── */
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    fill 0.25s ease,
+    box-shadow 0.25s ease !important;
+}
+
+/* ─── Tema Claro ─────────────────────────────────────────────────
+   No Tailwind v4 cada cor é uma CSS custom property (--color-*).
+   Sobrescrever aqui afeta TODAS as classes utilitárias que usam
+   essas variáveis — sem precisar alterar os componentes.
+──────────────────────────────────────────────────────────────── */
+html.light-theme {
+  /* Escala de cinzas invertida: o mais escuro vira o mais claro */
+  --color-gray-950: #f8fafc;   /* fundo geral da página         */
+  --color-gray-900: #ffffff;   /* fundo de cards                */
+  --color-gray-800: #f1f5f9;   /* fundo de inputs / botões      */
+  --color-gray-700: #e2e8f0;   /* hover states / bordas         */
+  --color-gray-600: #cbd5e1;   /* elementos sutis               */
+  --color-gray-500: #94a3b8;   /* placeholders                  */
+  --color-gray-400: #64748b;   /* texto secundário              */
+  --color-gray-300: #475569;   /* texto de suporte              */
+  --color-gray-200: #334155;
+  --color-gray-100: #1e293b;
+
+  /* Texto principal: branco vira quase-preto */
+  --color-white: #0f172a;
+
+  /* Badges de status: fundo escuro → tinte claro */
+  --color-emerald-900: #d1fae5;
+  --color-red-900:     #fee2e2;
+  --color-blue-900:    #dbeafe;
+  --color-yellow-900:  #fef9c3;
+  --color-purple-900:  #ede9fe;
+  --color-amber-900:   #fef3c7;
+
+  /* Texto de badges: tom claro → tom escuro para contraste */
+  --color-emerald-200: #065f46;
+  --color-red-200:     #991b1b;
+  --color-amber-200:   #92400e;
+
+  /* Ícones e destaques: versões mais escuras para fundo claro */
+  --color-emerald-400: #059669;
+  --color-red-400:     #dc2626;
+  --color-blue-400:    #2563eb;
+  --color-yellow-400:  #d97706;
+}
+
+/* Cards coloridos de ação (bg-emerald-600, bg-blue-600) mantêm
+   texto branco — CSS custom properties são herdadas em cascata,
+   então resetar aqui restaura o branco dentro desses containers. */
+html.light-theme .bg-emerald-600,
+html.light-theme .bg-blue-600 {
+  --color-white: #ffffff;
+}
+
+/* O knob do Switch deve ser sempre branco para visibilidade */
+html.light-theme [role="switch"] > span {
+  --color-white: #ffffff;
+}
+
+/* ─── Modo Baixa Visão ───────────────────────────────────────────────────────
+   font-size: 120% no <html> escala automaticamente TODOS os valores rem do
+   Tailwind (text-*, p-*, m-*, gap-*, etc.) sem alterar nenhum componente.
+   As demais regras melhoram contraste, legibilidade e alvos de toque.
+────────────────────────────────────────────────────────────────────────────── */
+html.low-vision {
+  font-size: 120%;
+  line-height: 1.8;
+  letter-spacing: 0.01em;
+  word-spacing: 0.05em;
+}
+
+/* Títulos — peso máximo e tracking negativo para clareza */
+html.low-vision h1,
+html.low-vision h2,
+html.low-vision h3,
+html.low-vision h4 {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+}
+
+/* Texto corrido — peso mínimo 500 para evitar fontes finas */
+html.low-vision p,
+html.low-vision li,
+html.low-vision td,
+html.low-vision th,
+html.low-vision label,
+html.low-vision span {
+  font-weight: 500;
+}
+
+/* Botões — altura mínima de 44 px (recomendação WCAG) e peso bold */
+html.low-vision button {
+  min-height: 2.75rem;
+  font-weight: 700;
+}
+
+/* Inputs e selects — altura mínima e borda mais visível */
+html.low-vision input,
+html.low-vision select,
+html.low-vision textarea {
+  min-height: 3rem;
+  border-width: 2px !important;
+  font-size: 1rem;
+}
+
+/* Bordas de cards e containers — mais espessas */
+html.low-vision .border,
+html.low-vision .border-b,
+html.low-vision .border-t {
+  border-width: 2px !important;
+}
+
+/* Links — sublinhado explícito para não depender só de cor */
+html.low-vision a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+  font-weight: 600;
+}
+
+/* Indicador de foco — ring largo e bem visível (WCAG AAA) */
+html.low-vision *:focus-visible {
+  outline: 3px solid var(--a11y-income, #10b981);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+/* Textos dos eixos do recharts (SVG) */
+html.low-vision .recharts-cartesian-axis-tick text,
+html.low-vision .recharts-legend-item-text,
+html.low-vision .recharts-label {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+/* Texto central do donut */
+html.low-vision .recharts-text {
+  font-weight: 700 !important;
+}
+
+/* Painel de acessibilidade — labels ficam mais legíveis */
+html.low-vision [role="dialog"] label span,
+html.low-vision [role="dialog"] p {
+  font-weight: 500;
+}
+
+/* Switch knob permanece branco em baixa visão */
+html.low-vision [role="switch"] > span {
+  --color-white: #ffffff;
+}

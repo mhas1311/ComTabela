@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { Trash2, Plus, ArrowLeft, Edit3, Check, X } from 'lucide-react'
+import Navbar from '../components/Navbar'
 
 
 export default function Transactions() {
@@ -27,20 +28,27 @@ export default function Transactions() {
 
   const getSituationBadge = (t) => {
     const situation = t.status || null
-
+    const base = 'px-2 py-1 rounded-full text-xs font-medium border'
 
     if (t.type === 'income') {
       if (situation === 'received') {
         return (
-          <span className="px-2 py-1 rounded-full text-xs font-medium bg-emerald-900 text-emerald-200 border border-emerald-700">
-            Recebido
+          <span className={base} style={{
+            backgroundColor: 'var(--a11y-success-bg)',
+            color: 'var(--a11y-success-text)',
+            borderColor: 'var(--a11y-success-border)',
+          }}>
+            ✓ Recebido
           </span>
         )
       }
-
       return (
-        <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-500 text-amber-900 border border-amber-700">
-          Pendente
+        <span className={base} style={{
+          backgroundColor: 'var(--a11y-warning-bg)',
+          color: 'var(--a11y-warning-text)',
+          borderColor: 'var(--a11y-warning-border)',
+        }}>
+          ○ Pendente
         </span>
       )
     }
@@ -48,15 +56,23 @@ export default function Transactions() {
     // expense
     if (situation === 'paid') {
       return (
-        <span className="px-2 py-1 rounded-full text-xs font-medium bg-emerald-900 text-emerald-200 border border-emerald-700">
-          Pago
+        <span className={base} style={{
+          backgroundColor: 'var(--a11y-success-bg)',
+          color: 'var(--a11y-success-text)',
+          borderColor: 'var(--a11y-success-border)',
+        }}>
+          ✓ Pago
         </span>
       )
     }
 
     return (
-      <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-900 text-red-200 border border-red-700">
-        Pendente
+      <span className={base} style={{
+        backgroundColor: 'var(--a11y-danger-bg)',
+        color: 'var(--a11y-danger-text)',
+        borderColor: 'var(--a11y-danger-border)',
+      }}>
+        ○ Pendente
       </span>
     )
   }
@@ -219,21 +235,17 @@ export default function Transactions() {
 
   return ( 
     <div className="min-h-screen bg-gray-950 text-white p-4 md:p-8">
-      {/* Navegação superior */}
-      <div className="flex justify-between items-center mb-4">
-        <Link to="/dashboard" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
-          <ArrowLeft size={18} /> Voltar ao Início
-        </Link>
-        <div className="flex items-center gap-3">
+      <Navbar
+        backTo="/dashboard"
+        rightSlot={
           <Link
             to="/categories"
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-medium transition-colors"
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-medium transition-colors text-sm"
           >
             Categorias
-            </Link>
-          {/*<ExportButton transactions={transactions} />*/}
-        </div>
-      </div>
+          </Link>
+        }
+      />
 
       <h1 className="text-3xl font-bold mb-8">Transações</h1>
 

@@ -17,11 +17,6 @@ const ACCESSIBILITY_OPTIONS = [
     description: 'Ajusta paleta de cores para daltonismo',
   },
   {
-    key: 'vlibras',
-    label: 'VLibras',
-    description: 'Ativa o tradutor de Libras na página',
-  },
-  {
     key: 'lightTheme',
     label: 'Tema Claro',
     description: 'Alterna para o tema de cores claras',
@@ -160,7 +155,7 @@ function AccessibilityPanel({ onClose }) {
                 </label>
                 <Switch
                   id={switchId}
-                  checked={settings[key]}
+                  checked={Boolean(settings[key])}
                   onChange={() => toggle(key)}
                 />
               </div>

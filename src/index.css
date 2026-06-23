@@ -121,7 +121,7 @@ html.light-theme [role="switch"] > span {
    As demais regras melhoram contraste, legibilidade e alvos de toque.
 ────────────────────────────────────────────────────────────────────────────── */
 html.low-vision {
-  font-size: 120%;
+  font-size: 135%;
   line-height: 1.8;
   letter-spacing: 0.01em;
   word-spacing: 0.05em;
@@ -149,7 +149,7 @@ html.low-vision span {
 
 /* Botões — altura mínima de 44 px (recomendação WCAG) e peso bold */
 html.low-vision button {
-  min-height: 2.75rem;
+  min-height: 1rem;
   font-weight: 700;
 }
 

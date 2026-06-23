@@ -6,7 +6,6 @@ const defaults = {
   lowVision: false,
   colorBlind: false,
   colorBlindType: 'deuteranopia',
-  vlibras: false,
   lightTheme: false,
 }
 
@@ -191,72 +190,6 @@ function applyColorBlindVars(enabled, type) {
   Object.entries(tw).forEach(([key, val]) => root.style.setProperty(key, val))
 }
 
-// ─── VLibras ──────────────────────────────────────────────────────────────────
-const VLIBRAS_CONTAINER_ID = 'vlibras-container'
-const VLIBRAS_SCRIPT_ID    = 'vlibras-script'
-
-function buildVLibrasContainer() {
-  // Usa createElement + setAttribute para garantir que os atributos booleanos
-  // (vw, vw-access-button, vw-plugin-wrapper) sejam reconhecidos em todos os browsers.
-  const container = document.createElement('div')
-  container.id = VLIBRAS_CONTAINER_ID
-  container.setAttribute('vw', '')
-  container.classList.add('enabled')
-
-  const btn = document.createElement('div')
-  btn.setAttribute('vw-access-button', '')
-  btn.classList.add('active')
-
-  const pluginWrapper = document.createElement('div')
-  pluginWrapper.setAttribute('vw-plugin-wrapper', '')
-
-  const topWrapper = document.createElement('div')
-  topWrapper.classList.add('vw-plugin-top-wrapper')
-
-  pluginWrapper.appendChild(topWrapper)
-  container.appendChild(btn)
-  container.appendChild(pluginWrapper)
-  return container
-}
-
-function applyVLibras(enabled) {
-  if (!enabled) {
-    document.getElementById(VLIBRAS_CONTAINER_ID)?.remove()
-    document.getElementById(VLIBRAS_SCRIPT_ID)?.remove()
-    // Limpa a referência para que a próxima ativação reinicialize do zero
-    delete window.VLibras
-    return
-  }
-
-  // Evita duplicação em ativações múltiplas
-  if (document.getElementById(VLIBRAS_CONTAINER_ID)) return
-
-  document.body.appendChild(buildVLibrasContainer())
-
-  const init = () => {
-    // Pequeno delay garante que o script terminou de registrar
-    // suas dependências internas antes de chamar o construtor
-    setTimeout(() => {
-      if (typeof window.VLibras !== 'undefined') {
-        new window.VLibras.Widget('https://vlibras.gov.br/app')
-      }
-    }, 100)
-  }
-
-  if (typeof window.VLibras !== 'undefined') {
-    init()
-    return
-  }
-
-  const script = document.createElement('script')
-  script.id    = VLIBRAS_SCRIPT_ID
-  script.src   = 'https://vlibras.gov.br/app/vlibras-plugin.js'
-  script.async = true
-  script.onload  = init
-  script.onerror = () => console.warn('[VLibras] falha ao carregar o script.')
-  document.head.appendChild(script)
-}
-
 function applyLowVision(enabled) {
   if (enabled) {
     document.documentElement.classList.add('low-vision')
@@ -298,12 +231,6 @@ export function AccessibilityProvider({ children }) {
     applyColorBlindVars(settings.colorBlind, settings.colorBlindType)
     applyLowVision(settings.lowVision)
   }, [])
-
-  // VLibras requer useEffect próprio pois injeta script externo —
-  // não pode ficar dentro de setSettings (anti-pattern em StrictMode)
-  useEffect(() => {
-    applyVLibras(settings.vlibras)
-  }, [settings.vlibras])
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(settings))

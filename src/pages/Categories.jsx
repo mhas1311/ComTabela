@@ -13,7 +13,6 @@ export default function Categories() {
   const [color, setColor] = useState('#10b981')
   const [editingId, setEditingId] = useState(null)
   const [editName, setEditName] = useState('')
-  const [showColorPicker, setShowColorPicker] = useState(false)
 
   const fetchCategories = async () => {
     setLoading(true)
@@ -186,38 +185,14 @@ export default function Categories() {
                   type="button"
                   onClick={() => {
                     setColor(c)
-                    setShowColorPicker(false)
                   }}
                   className={`w-6 h-6 rounded-full border-2 ${color === c ? 'border-white scale-110' : 'border-transparent'} transition-transform`}
                   style={{ backgroundColor: c }}
                 />
               ))}
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setShowColorPicker((prev) => !prev)}
-                  className={`w-8 h-8 rounded-full border-2 ${!colorOptions.includes(color) ? 'border-white scale-110' : 'border-transparent'} transition-transform`}
-                  style={{
-                    background: 'linear-gradient(45deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080)',
-                    backgroundSize: '200% 200%',
-                    animation: 'gradient 3s ease infinite'
-                  }}
-                  aria-label="Escolher cor personalizada"
-                />
-                {showColorPicker && (
-                  <input
-                    type="color"
-                    value={color}
-                    onChange={(e) => {
-                      setColor(e.target.value)
-                      setShowColorPicker(false)
-                    }}
-                    className="absolute -top-3 left-0 w-8 h-8 rounded-full border-2 border-gray-600 cursor-pointer opacity-0"
-                    style={{ zIndex: 20 }}
-                    aria-label="Seletor de cores"
-                  />
-                )}
-              </div>
+              <label className={`relative w-8 h-8 rounded-full border-2 cursor-pointer overflow-hidden ${!colorOptions.includes(color) ? 'border-white scale-110' : 'border-gray-600'} transition-transform`} title="Escolher cor personalizada" style={{ background: 'conic-gradient(#f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00)' }}>
+                <input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" aria-label="Seletor de cores" />
+              </label>
             </div>
             <p className="mt-2 text-xs text-gray-500">Clique em uma cor pequena ou escolha sua própria com o seletor.</p>
           </div>

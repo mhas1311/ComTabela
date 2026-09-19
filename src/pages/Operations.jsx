@@ -8,6 +8,7 @@ export default function Operations() {
   const [enabled] = useState(() => localStorage.getItem('comtabela-operations') === 'true')
   const [bankroll, setBankroll] = useState(() => localStorage.getItem('comtabela-bankroll') || '')
   const [mode, setMode] = useState('simple')
+  const [variationTab, setVariationTab] = useState('odds')
   const [odd, setOdd] = useState('')
   const [reference, setReference] = useState('')
   const [opposite, setOpposite] = useState('')
@@ -40,6 +41,32 @@ export default function Operations() {
     const stake = Math.max(0, kelly) * (Number(fraction) || 0) / 100 * (Number(bankroll) || 0)
     return { fair, probability, edge, stake, ev: edge * stake }
   }, [odd, reference, opposite, fraction, bankroll, mode, threeOdds, multiple])
+
+  // Variação de Odds calculation
+  const variationResult = useMemo(() => {
+    const [originalOdd, currentOdd] = [odd, reference] // Using odd as original, reference as current for variation
+    if (!originalOdd || !currentOdd || Number(originalOdd) <= 1 || Number(currentOdd) <= 1) return null
+    
+    // Calculate implied probabilities
+    const originalProbability = 1 / Number(originalOdd)
+    const currentProbability = 1 / Number(currentOdd)
+    
+    // Calculate expected value per unit
+    const evPerUnit = currentOdd * originalProbability - 1
+    
+    // If you had a full unit at the original odd, your position value changes with current odd
+    const positionValue = currentOdd * originalProbability
+    
+    return {
+      originalOdd: Number(originalOdd),
+      currentOdd: Number(currentOdd),
+      originalProbability,
+      currentProbability,
+      evPerUnit,
+      positionValue,
+      variation: (positionValue - 1) * 100 // percentage variation
+    }
+  }, [odd, reference])
   const inventory = useMemo(() => items.reduce((sum, row) => ({ cost: sum.cost + Number(row.cost), target: sum.target + Number(row.target) }), { cost: 0, target: 0 }), [items])
   if (!enabled) return <Navigate to="/dashboard" replace />
   const saveBankroll = (event) => { event.preventDefault(); localStorage.setItem('comtabela-bankroll', bankroll) }

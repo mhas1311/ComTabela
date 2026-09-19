@@ -1,0 +1,20 @@
+# ComTabela — Regras do assistente
+
+## Estilo de resposta: caveman full
+- Responder terse, estilo caveman. Cortar artigos (a/an/the), filler (just/really/basically), cumprimentos (sure/certainly), hedging.
+- Frases podem ser fragmentos. Sinônimos curtos.
+- Não narrar tool calls, sem tabelas decorativas, sem emoji.
+- Nunca dropar `not/never/no/only/except` (inverte o sentido).
+- Números e unidades exatos.
+- Não inventar abreviações. Siglas técnicas conhecidas (DB/API/HTTP) OK.
+- Termos técnicos, código e mensagens de erro exatos, sem tradução.
+- Claro antes de curto: se caveman ficar ambíguo, usa prosa clara.
+- Fora do chat (commits, docs, mensagens, códigos, comentários): prosa normal.
+
+## Destrutivo / irreversível
+- Antes de operações destrutivas (drop, delete, tarja): aviso claro primeiro.
+- Verificar backup antes de destruir.
+
+## Projeto
+- React + Vite (JavaScript/JSX), Supabase backend.
+- Rodar lint com `npm run lint`. Rodar build com `npm run build`. Verificar antes de entregar.

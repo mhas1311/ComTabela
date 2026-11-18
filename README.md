@@ -13,20 +13,21 @@
 
 ## ✨ Funcionalidades
 
-- 🔐 **Autenticação Segura**: Login e cadastro com Supabase Auth
-- 📊 **Dashboard Interativo**: Visão geral das finanças com gráficos e estatísticas
-- 💳 **Gerenciamento de Transações**: Adicione, edite e exclua transações facilmente
-- 🏷️ **Sistema de Categorias**: Organize suas despesas e receitas por categoria
-- 🎨 **Interface Moderna**: Design dark com Tailwind CSS e Lucide icons
-- 📱 **Responsivo**: Funciona perfeitamente em desktop e mobile
-- 🔒 **Segurança**: Row Level Security (RLS) no Supabase para proteção de dados
+- 🔐 **Autenticação Segura**: Login, cadastro com medidor de força e recuperação de senha com Supabase Auth
+- 📊 **Dashboard Interativo**: Fluxo de caixa (6 meses), despesas por categoria (Recharts), múltiplas contas/carteiras e modo privacidade
+- 💳 **Gerenciamento de Transações**: Lançamentos únicos, parcelados e fixos mensais, filtros avançados, busca e exportação (CSV, Excel e PDF)
+- 🏷️ **Categorias e Metas**: Organização visual e tetos mensais de gastos por categoria
+- 💼 **Módulo Operações**: Calculadora EV/Kelly, diário de entradas EV+ (P&L vs. EV esperado) e gestão de estoque de revenda
+- 📱 **Responsivo**: Sidebar no desktop, barra inferior no mobile e visão em cards adaptativa
+- 🔒 **Segurança**: Isolamento por `user_id`, proteção contra CSV Injection e Row Level Security (RLS) no Supabase
 
 ## 🛠️ Tecnologias Utilizadas
 
 ### Frontend
 - **React 18** - Biblioteca JavaScript para interfaces
 - **Vite** - Build tool rápido e moderno
-- **Tailwind CSS** - Framework CSS utilitário
+- **Tailwind CSS** - Estilização e sistema de design
+- **Recharts** - Gráficos interativos de fluxo de caixa e performance
 - **Lucide React** - Ícones modernos e consistentes
 - **React Router** - Roteamento para SPA
 
@@ -37,14 +38,14 @@
 - **Row Level Security** - Segurança a nível de linha
 
 ### Ferramentas de Desenvolvimento
-- **ESLint** - Linting e formatação de código
+- **ESLint** - Linting e padronização de código
 - **Vite Plugin React** - Integração React com Vite
 
 ## 📋 Pré-requisitos
 
 Antes de começar, você vai precisar ter instalado em sua máquina:
 
-- [Node.js](https://nodejs.org/) (versão 16 ou superior)
+- [Node.js](https://nodejs.org/) (versão 18 ou superior)
 - [npm](https://www.npmjs.com/) ou [yarn](https://yarnpkg.com/)
 - Uma conta no [Supabase](https://supabase.com/)
 
@@ -94,25 +95,34 @@ O aplicativo estará disponível em `http://localhost:5173`
 comtabela/
 ├── public/                 # Arquivos estáticos
 ├── src/
-│   ├── assets/            # Imagens e recursos
-│   ├── components/        # Componentes reutilizáveis
-│   │   └── ProtectedRoute.jsx
-│   ├── contexts/          # Contextos React
-│   │   └── AuthContext.jsx
-│   ├── lib/               # Utilitários e configurações
+│   ├── assets/             # Imagens e recursos
+│   ├── components/         # Layout unificado, modais, skeletons e exportação
+│   │   ├── AppLayout.jsx
+│   │   ├── ConfirmDialog.jsx
+│   │   ├── ExportButton.jsx
+│   │   ├── ProtectedRoute.jsx
+│   │   └── Skeleton.jsx
+│   ├── contexts/           # Autenticação, notificações e workspace isolado
+│   │   ├── AuthContext.jsx
+│   │   ├── ToastContext.jsx
+│   │   └── WorkspaceContext.jsx
+│   ├── lib/                # Cliente Supabase, datas locais e sanitizadores
+│   │   ├── date.js
+│   │   ├── formatters.js
 │   │   └── supabase.js
-│   ├── pages/             # Páginas da aplicação
+│   ├── pages/              # Páginas da aplicação
 │   │   ├── Categories.jsx
 │   │   ├── Dashboard.jsx
 │   │   ├── Login.jsx
+│   │   ├── Operations.jsx
 │   │   └── Transactions.jsx
-│   ├── App.css            # Estilos globais
-│   ├── App.jsx            # Componente principal
-│   └── main.jsx           # Ponto de entrada
-├── SUPABASE_POLICY.md     # Políticas de segurança do Supabase
-├── package.json           # Dependências e scripts
-├── vite.config.js         # Configuração do Vite
-└── README.md              # Este arquivo
+│   ├── index.css           # Sistema de design e tokens CSS
+│   ├── App.jsx             # Roteamento e provedores
+│   └── main.jsx            # Ponto de entrada
+├── SUPABASE_POLICY.md      # Esquema SQL e políticas RLS do Supabase
+├── package.json            # Dependências e scripts
+├── vite.config.js          # Configuração do Vite
+└── README.md               # Este arquivo
 ```
 
 ## 📜 Scripts Disponíveis
